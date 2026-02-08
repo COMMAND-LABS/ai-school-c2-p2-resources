@@ -1,0 +1,790 @@
+{
+  "name": "1 - Research + Text-2-Speech",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1536,
+        -352
+      ],
+      "id": "274bb210-7f52-42b9-b8ee-bf94c394bb03",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "messages": {
+          "message": [
+            {
+              "content": "=# TASK\n\nResearch the latest news on the TOPIC provided below.\n\n## CURRENT DATE\n\n{{ $now.format('yyyy-MM-dd') }}\n\n## TOPIC\n\n{{ $json.topic }}"
+            }
+          ]
+        },
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.perplexity",
+      "typeVersion": 1,
+      "position": [
+        -1088,
+        -352
+      ],
+      "id": "9b870e43-080b-43f8-9d9d-dddf824412b2",
+      "name": "Message a model",
+      "credentials": {
+        "perplexityApi": {
+          "id": "g3M5V7VE9TlQjbuq",
+          "name": "Perplexity API Key for AI Avatar News Reports"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4bd4a998-bfe7-498d-94bc-a68c06647d6c",
+              "name": "topic",
+              "value": "Haiti",
+              "type": "string"
+            },
+            {
+              "id": "050b0fd6-33b2-45f8-8113-c3ae87d3db2f",
+              "name": "timestamp",
+              "value": "={{ $now.format('yyyy_MM_dd_hh_mm_ss') }}",
+              "type": "string"
+            },
+            {
+              "id": "ed22a32a-0fdc-4b30-8fcd-363598d06b1c",
+              "name": "date",
+              "value": "={{ $now.format(\"yyyy_MM_dd\") }}",
+              "type": "string"
+            },
+            {
+              "id": "775eda22-f746-42a0-858c-146fab5d012e",
+              "name": "voiceIds",
+              "value": "={\n  \"ht\": \"aTxZrSrp47xsP6Ot4Kgd\",\n  \"en\": \"6aDn1KB0hjpdcocrUkmq\"\n}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1312,
+        -352
+      ],
+      "id": "a03be355-dd4e-40e7-8ebd-4e8b3374049b",
+      "name": "Set Config Variables"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": true,
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "606ddc8e-7e93-4f97-a87e-a11cf0dd617d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "English"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "105c05b2-9f9f-4680-94d4-8f6197751e7f",
+                    "leftValue": false,
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Haitian Creole"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -864,
+        -352
+      ],
+      "id": "c7eaafb5-6965-4815-8b06-4e4b5006173f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.1",
+          "mode": "list",
+          "cachedResultName": "GPT-5.1"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=# TASK\n\nYou are the host of an internationally renowned short-form news show. Create an outline for your latest news report based on the research provided below.\n\nThe outline will be organized into scenes or segments. Each scene represents one news segment of the overall news program.\n\n## REQUIREMENTS\n\n- The general topic of the news program is: {{ $('Set Config Variables').item.json.topic }}\n- The script of each segment should be between 5 to 10 seconds in length when dictated\n- Only create 3 segments\n- Any dates in the script should be spelled out so the text-2-speech tool accurately pronounces them\n- avoid special characters in the script so the text-to-speech system pronounces all words in the script correctly\n- the script should be written in English as it will be delivered in that language downstream\n\n## RESEARCH\n\n{{ $('Message a model').item.json.choices[0].message.content }}\n\n## CITATIONS\n\n{{ $('Message a model').item.json.citations }}\n\n## JSON OUTPUT SCHEMA\n\n{\n  \"index\": number;\n  \"script\": string;\n  \"headline\": string;\n  \"citations\": string[];\n}[]"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "textFormat": {
+            "textOptions": {
+              "type": "json_schema",
+              "schema": "{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"report\"],\n  \"properties\": {\n    \"report\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"additionalProperties\": false,\n        \"required\": [\"index\", \"script\", \"headline\", \"citations\"],\n        \"properties\": {\n          \"index\": { \"type\": \"number\" },\n          \"script\": { \"type\": \"string\" },\n          \"headline\": { \"type\": \"string\" },\n          \"citations\": {\n            \"type\": \"array\",\n            \"items\": { \"type\": \"string\" }\n          }\n        }\n      }\n    }\n  }\n}"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -640,
+        -448
+      ],
+      "id": "2dc14034-5dbe-46b2-9421-c7fe7707982b",
+      "name": "Write Script",
+      "credentials": {
+        "openAiApi": {
+          "id": "3Pi4ZntDXCnJXClE",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.elevenlabs.io/v1/text-to-speech/{{ $('Set Config Variables').item.json.voiceIds.en }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "output_format",
+              "value": "mp3_44100_128"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.script }}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_multilingual_v2"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -64,
+        -448
+      ],
+      "id": "95f5aff4-b665-497c-b35c-47bf1bcde08b",
+      "name": "ElevenLabs TTS",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MNID48LNuwKISm0N",
+          "name": "Eleven Lab Auth Header JULAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "path": "=/projects/{{ $('Set Config Variables').item.json.topic.replaceAll(\" \", \"_\") }}_news_report_{{ $('Set Config Variables').item.json.date }}/{{ $('Set Config Variables').item.json.timestamp }}/english/{{ $json.index }}.mp3",
+        "binaryData": true
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        384,
+        -448
+      ],
+      "id": "523e3547-667e-4da6-987c-31fe6cc38fed",
+      "name": "Upload TTS audio",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "x9JcistZPcwmSHoZ",
+          "name": "Dropbox account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "path": "=/projects/{{ $('Set Config Variables').item.json.topic.replaceAll(\" \", \"_\") }}_news_report_{{ $('Set Config Variables').item.json.date }}/{{ $('Set Config Variables').item.json.timestamp }}/english/{{ $('Split Out').item.json.index }}.json",
+        "fileContent": "={{ JSON.stringify($('Write Script').item.json.output[0].content[0].text.report[$('Split Out').item.json.index - 1]) }}"
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        608,
+        -448
+      ],
+      "id": "25d3ff96-f757-4825-856b-ccf4bbe0e0a0",
+      "name": "Upload Script",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "x9JcistZPcwmSHoZ",
+          "name": "Dropbox account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0].content[0].text.report",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -448
+      ],
+      "id": "c0a4536d-1c0a-4eb8-a084-2b8f7f63a1aa",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        -448
+      ],
+      "id": "576fdf70-6c7a-414e-87fe-98aea886cdd3",
+      "name": "Wait",
+      "webhookId": "579a0129-e04e-4612-9964-9b32d4d8aec5"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.1",
+          "mode": "list",
+          "cachedResultName": "GPT-5.1"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=# TASK\n\nYou are the host of an internationally renowned short-form news show. Create an outline for your latest news report based on the research provided below.\n\nThe outline will be organized into scenes or segments. Each scene represents one news segment of the overall news program.\n\n## REQUIREMENTS\n\n- The general topic of the news program is: {{ $('Set Config Variables').item.json.topic }}\n- Each segment should be between 5 to 10 seconds in length\n- Only create 3 segments\n- Any dates in the script should be spelled out so the text-2-speech tool accurately pronounces them\n- avoid special characters in the script so the text-to-speech system pronounces all words in the script correctly\n- the script should be written in Haitian Creole as it will be delivered in that language downstream\n\n## RESEARCH\n\n{{ $('Message a model').item.json.choices[0].message.content }}\n\n## CITATIONS\n\n{{ $('Message a model').item.json.citations }}\n\n## JSON OUTPUT SCHEMA\n\n{\n  \"index\": number;\n  \"script\": string;\n  \"headline\": string;\n  \"citations\": string[];\n}[]"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "textFormat": {
+            "textOptions": {
+              "type": "json_schema",
+              "schema": "{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\"report\"],\n  \"properties\": {\n    \"report\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"additionalProperties\": false,\n        \"required\": [\"index\", \"script\", \"headline\", \"citations\"],\n        \"properties\": {\n          \"index\": { \"type\": \"number\" },\n          \"script\": { \"type\": \"string\" },\n          \"headline\": { \"type\": \"string\" },\n          \"citations\": {\n            \"type\": \"array\",\n            \"items\": { \"type\": \"string\" }\n          }\n        }\n      }\n    }\n  }\n}"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -640,
+        -256
+      ],
+      "id": "6b45eb46-6b4f-46bc-803c-c09b466432fe",
+      "name": "Write Script1",
+      "credentials": {
+        "openAiApi": {
+          "id": "3Pi4ZntDXCnJXClE",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.elevenlabs.io/v1/text-to-speech/{{ $('Set Config Variables').item.json.voiceIds.ht }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "output_format",
+              "value": "mp3_44100_128"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.script }}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_multilingual_v2"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -64,
+        -256
+      ],
+      "id": "b1ba47bb-2c3c-4150-9045-efd0b587b6c9",
+      "name": "ElevenLabs TTS1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "MNID48LNuwKISm0N",
+          "name": "Eleven Lab Auth Header JULAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "path": "=/projects/{{ $('Set Config Variables').item.json.topic.replaceAll(\" \", \"_\") }}_news_report_{{ $('Set Config Variables').item.json.date }}/{{ $('Set Config Variables').item.json.timestamp }}/creole/{{ $json.index }}.mp3",
+        "binaryData": true
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        384,
+        -256
+      ],
+      "id": "9d1cb74c-6b67-4494-9604-f7bed7e3a6d3",
+      "name": "Upload TTS audio1",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "x9JcistZPcwmSHoZ",
+          "name": "Dropbox account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "path": "=/projects/{{ $('Set Config Variables').item.json.topic.replaceAll(\" \", \"_\") }}_news_report_{{ $('Set Config Variables').item.json.date }}/{{ $('Set Config Variables').item.json.timestamp }}/english/{{ $('Split Out1').item.json.index }}.json",
+        "fileContent": "={{ JSON.stringify($('Write Script1').item.json.output[0].content[0].text.report[$('Split Out1').item.json.index - 1]) }}"
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        608,
+        -256
+      ],
+      "id": "6b8ddddf-b7e0-43ec-94bb-c54d051ce290",
+      "name": "Upload Script1",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "x9JcistZPcwmSHoZ",
+          "name": "Dropbox account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0].content[0].text.report",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -256
+      ],
+      "id": "e513aaa8-8f55-4cbf-90ba-f8ac4458dc89",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        -256
+      ],
+      "id": "44e89f9c-dbf5-4c90-914f-3349dd97f364",
+      "name": "Wait1",
+      "webhookId": "579a0129-e04e-4612-9964-9b32d4d8aec5"
+    }
+  ],
+  "pinData": {
+    "Message a model": [
+      {
+        "json": {
+          "id": "4c01344a-3862-4b65-a823-17c1f67b355d",
+          "model": "sonar",
+          "created": 1770484553,
+          "usage": {
+            "prompt_tokens": 33,
+            "completion_tokens": 556,
+            "total_tokens": 589,
+            "search_context_size": "low",
+            "cost": {
+              "input_tokens_cost": 0.00003,
+              "output_tokens_cost": 0.00056,
+              "request_cost": 0.005,
+              "total_cost": 0.00559
+            }
+          },
+          "citations": [
+            "https://news.un.org/en/story/2026/02/1166906",
+            "https://www.cbsnews.com/miami/news/haiti-government-unrest-tps-battle/",
+            "https://www.youtube.com/watch?v=GVRq6ZMv7so",
+            "https://www.ahcancal.org/News-and-Communications/Blog/Pages/Update-on-Temporary-Protected-Status-and-Haiti.aspx",
+            "https://haitianbridgealliance.org/2026/02/",
+            "https://www.alston.com/en/insights/publications/2026/02/haitian-temporary-protected-status-termination"
+          ],
+          "search_results": [
+            {
+              "title": "Keeping hope ‘alive for younger generations’ in Haiti as funding falters",
+              "url": "https://news.un.org/en/story/2026/02/1166906",
+              "date": "2026-02-06",
+              "last_updated": "2026-02-06",
+              "snippet": "# Keeping hope ‘alive for younger generations’ in Haiti as funding falters\n\n**By**\n\n**Daniel Dickinson**Humanitarian Aid\n\nHaiti is facing one of the world’s most acute humanitarian crises, driven by escalating gang violence, political paralysis, and deep economic distress.\n\nArmed groups control larg...",
+              "source": "web"
+            },
+            {
+              "title": "U.S. sends warning as Haiti transitional council's term is set to expire ...",
+              "url": "https://www.cbsnews.com/miami/news/haiti-government-unrest-tps-battle/",
+              "date": "2026-02-07",
+              "last_updated": "2026-02-07",
+              "snippet": "The U.S. Embassy sent an alert Friday morning urging Americans in Haiti to stay alert for \"unrest outside the normal\" tied to the February 7th ...",
+              "source": "web"
+            },
+            {
+              "title": "Trump administration appeals ruling blocking effort to end TPS ...",
+              "url": "https://www.youtube.com/watch?v=GVRq6ZMv7so",
+              "date": "2026-02-06",
+              "last_updated": "2026-02-06",
+              "snippet": "1.7M views · 19:15 · Go to channel ABC News. ABC World News Tonight with David Muir Full Broadcast - Feb. 6, 2026. ABC News. New. 553K views.",
+              "source": "web"
+            },
+            {
+              "title": "Update on Temporary Protected Status and Haiti - AHCA/NCAL",
+              "url": "https://www.ahcancal.org/News-and-Communications/Blog/Pages/Update-on-Temporary-Protected-Status-and-Haiti.aspx",
+              "date": "2026-02-03",
+              "last_updated": "2026-02-07",
+              "snippet": "This week, on February 2, 2026, a federal judge in Washington D.C. blocked the Trump Administration's attempt to end the TPS program for ...",
+              "source": "web"
+            },
+            {
+              "title": "February 2026 – The Bridge",
+              "url": "https://haitianbridgealliance.org/2026/02/",
+              "snippet": "Month: February 2026 · HAITIAN BRIDGE ALLIANCE CALLS FOR UNITY ACROSS MOVEMENTS TO DEFEND CIVIL , FREEDOM OF PRESS, AND IMMIGRANTS' RIGHTS DURING BLACK HISTORY ...",
+              "source": "web"
+            },
+            {
+              "title": "Court Stays Termination of Haitians' Temporary Protected Status",
+              "url": "https://www.alston.com/en/insights/publications/2026/02/haitian-temporary-protected-status-termination",
+              "date": "2026-02-04",
+              "last_updated": "2026-02-07",
+              "snippet": "As of February 4, 2026, USCIS has updated its website confirming the work authorization extension while simultaneously vowing to appeal.",
+              "source": "web"
+            }
+          ],
+          "object": "chat.completion",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "Haiti faces one of the world's most acute humanitarian crises in early 2026, marked by **escalating gang violence**, political instability as the Transitional Presidential Council’s term expires on February 7, and critically underfunded aid efforts.[1][2]\n\n### Humanitarian Crisis and Funding Shortfall\nArmed groups control large areas of Port-au-Prince, displacing **over 1.4 million people** and blocking access to food, health, water, and education services.[1] Half of Haiti's 11.4 million population—about **six million people**—requires humanitarian assistance in 2026, with rising child malnutrition amid widespread food insecurity.[1] The UN's 2026 Humanitarian Response Plan, launched in late 2025, is funded at less than **4%** as of early February, leading to cuts in:\n- Food security and assistance programs.[1]\n- Water distribution and WASH (water, sanitation, hygiene) services.[1]\n- Primary healthcare and community health support.[1]\n- Education support for displaced children.[1]\n- Protection services for gender-based violence survivors and child protection.[1]\n\nWithout improved funding and security, needs are expected to worsen, though aid groups aim to expand support if conditions allow.[1]\n\n### Political Tensions and Potential Unrest\nHaiti's Transitional Presidential Council, installed in 2024, reaches the end of its term on **February 7, 2026** (today), prompting U.S. Embassy alerts for Americans to avoid travel due to risks of \"unrest outside the normal.\"[2] U.S. Secretary of State Marco Rubio urged the council to step down while supporting Prime Minister Alix Didier Fils-Aimé.[2] Gang violence endangers critical sites like a hospital in Cité Soleil, Haiti's largest neonatal unit, which reports drone bombings nearby but vows to stay open, calling for protection of hospitals, schools, and camps.[2]\n\n### U.S. Policy on Haitian TPS\nThe Trump administration's effort to terminate **Temporary Protected Status (TPS)** for Haitians—initially set for February 3, 2026—was blocked by a federal judge on February 2, citing ongoing violence.[3][4][6] The Department of Homeland Security had announced the end last November, affecting around **350,000 Haitian migrants** in the U.S., but the ruling keeps work permits valid pending appeals sought by the Justice Department.[3][4][6] USCIS confirmed the extension as of February 4, advising employers to accept valid TPS documents.[6] Advocates highlight impacts on communities like South Florida's 150,000 Haitians.[3]"
+              },
+              "delta": {
+                "role": "assistant",
+                "content": ""
+              },
+              "finish_reason": "stop"
+            }
+          ]
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Write Script1": [
+      {
+        "json": {
+          "output": [
+            {
+              "id": "msg_081c625549cc89db006987882c677c81a3acf95592bb1562c8",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": {
+                    "report": [
+                      {
+                        "index": 1,
+                        "script": "Tonight we begin in Haiti, where one of the worlds most severe humanitarian crises is unfolding. Armed groups now control large parts of Port au Prince, forcing more than one point four million people from their homes. Half of the countrys nearly eleven point four million citizens need aid, but the United Nations response plan for twenty twenty six is funded at less than four percent, forcing cuts to food, water, health care, and schooling for displaced children.",
+                        "headline": "Escalating Humanitarian Crisis and Aid Shortfall in Haiti",
+                        "citations": [
+                          "https://news.un.org/en/story/2026/02/1166906"
+                        ]
+                      },
+                      {
+                        "index": 2,
+                        "script": "The crisis deepens as Haitis Transitional Presidential Council reaches the end of its mandate today, February seventh, twenty twenty six, heightening fears of political unrest. The United States Embassy has warned Americans to avoid travel, citing risks of unrest outside the normal. Meanwhile, gang violence is endangering critical services, including a key hospital in Cite Soleil that runs Haitis largest neonatal unit and reports drone bombings nearby while struggling to stay open.",
+                        "headline": "Political Deadline and Rising Violence Raise Fears of Unrest",
+                        "citations": [
+                          "https://news.un.org/en/story/2026/02/1166906",
+                          "https://www.cbsnews.com/miami/news/haiti-government-unrest-tps-battle/",
+                          "https://www.youtube.com/watch?v=GVRq6ZMv7so"
+                        ]
+                      },
+                      {
+                        "index": 3,
+                        "script": "In the United States, a federal judge has temporarily blocked the Trump administrations move to end Temporary Protected Status for Haitians, which was set to expire on February third, twenty twenty six. The ruling on February second keeps work permits and protections in place for roughly three hundred fifty thousand Haitian migrants while appeals move forward. Advocates say the decision is crucial for communities like South Florida, home to about one hundred fifty thousand Haitians, as violence continues back home.",
+                        "headline": "US Court Halts End of Haitian Temporary Protected Status",
+                        "citations": [
+                          "https://www.cbsnews.com/miami/news/haiti-government-unrest-tps-battle/",
+                          "https://www.ahcancal.org/News-and-Communications/Blog/Pages/Update-on-Temporary-Protected-Status-and-Haiti.aspx",
+                          "https://haitianbridgealliance.org/2026/02/",
+                          "https://www.alston.com/en/insights/publications/2026/02/haitian-temporary-protected-status-termination"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "role": "assistant"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Config Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Config Variables": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Write Script",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write Script1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Script": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ElevenLabs TTS": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload TTS audio": {
+      "main": [
+        [
+          {
+            "node": "Upload Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "ElevenLabs TTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Upload TTS audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Script1": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ElevenLabs TTS1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload TTS audio1": {
+      "main": [
+        [
+          {
+            "node": "Upload Script1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "ElevenLabs TTS1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Upload TTS audio1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3db31125-f154-48ed-8b02-78b1b7f2be38",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"
+  },
+  "id": "MeYpR8amo2AyVJ5z",
+  "tags": []
+}

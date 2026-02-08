@@ -1,0 +1,371 @@
+{
+  "name": "3a - Generate AI Avatar Clips",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -768,
+        -32
+      ],
+      "id": "dfb5a39e-b83d-46a2-9bce-8bcd6aade2c5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "folder",
+        "operation": "list",
+        "path": "={{ $json.dropbox_folder_with_media_assets }}",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        -32
+      ],
+      "id": "59fee05e-906a-4d27-9fb2-e3a38a117608",
+      "name": "List a folder",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "x9JcistZPcwmSHoZ",
+          "name": "Dropbox account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "40e8fae1-ff38-495c-b90b-2503dfcae306",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": ".mp3",
+              "operator": {
+                "type": "string",
+                "operation": "endsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        352,
+        -96
+      ],
+      "id": "8731fa52-0cf2-4643-b7fb-76c9d490bcd1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dropboxapi.com/2/sharing/list_shared_links",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "dropboxOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"path\": \"{{ $json.pathLower }}\",\n  \"direct_only\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        576,
+        -96
+      ],
+      "id": "7c3b0a7f-f97b-43cb-b591-aa65a27d2e1b",
+      "name": "List Dropbox \"Share Links\" for file",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "x9JcistZPcwmSHoZ",
+          "name": "Dropbox account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "843709d1-ea9c-4b93-8c1d-af1a06fa7348",
+              "name": "directDownloadLink",
+              "value": "={{ $json.links[0].url.replaceAll(\"dl=0\",\"dl=1\") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        -96
+      ],
+      "id": "6a9a73a7-60c1-4f27-b1a8-fec715b63bb4",
+      "name": "Make Direct Download Link"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"caption\": \"false\",\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"scale\": 1,\n        \"avatar_style\": \"normal\",\n        \"talking_style\": \"stable\",\n        \"avatar_id\": \"e5b9411a1b8f4215ae374b2259c664d2\"\n      },\n      \"voice\": {\n        \"type\": \"audio\",\n        \"speed\": \"1\",\n        \"pitch\": \"0\",\n        \"duration\": \"1\",\n        \"audio_url\": \"{{ $json.directDownloadLink }}\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": \"1920\",\n    \"height\": \"1080\"\n  },\n  \"title\": \"{{ $('List a folder').item.json.name.split(\".\")[0] }}_{{ $('Set Config').item.json.identifier }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1248,
+        -32
+      ],
+      "id": "6d618f86-3704-4ca5-adca-ecf541b46fbc",
+      "name": "Generate AI Avatar Video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "NmemITnrcYgZTwiH",
+          "name": "HeyGen API key"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1024,
+        -96
+      ],
+      "id": "7fd69acf-8cc1-4b06-ad3f-9582355ebfd4",
+      "name": "Wait",
+      "webhookId": "636fee82-74a9-4ba8-bb4c-98c45b15b569"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        128,
+        -32
+      ],
+      "id": "39c88c03-8d37-4675-97da-e177ff8a3d6d",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f47b10fd-e17f-4502-8ebe-634bfb617b4b",
+              "name": "dropbox_folder_with_media_assets",
+              "value": "={{ $json.mediaAssetsFolderPath }}",
+              "type": "string"
+            },
+            {
+              "id": "6f4e78c8-0db4-4b31-ae8c-63bf7faf18c3",
+              "name": "identifier",
+              "value": "={{ $now.format('mmss') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        -32
+      ],
+      "id": "1258cb0c-14df-4a43-874c-3f5fc8636930",
+      "name": "Set Config"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "4IC8JLbqt6xAPRAw",
+          "mode": "list",
+          "cachedResultName": "AI Avatar News Report DT",
+          "cachedResultUrl": "/projects/JfibotTF1i2uZ3V5/datatables/4IC8JLbqt6xAPRAw"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "1"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        -32
+      ],
+      "id": "c0039983-c93e-4b27-817d-d0ed47ca38a0",
+      "name": "Get row(s)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List a folder": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "List Dropbox \"Share Links\" for file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Dropbox \"Share Links\" for file": {
+      "main": [
+        [
+          {
+            "node": "Make Direct Download Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Make Direct Download Link": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Avatar Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Avatar Video": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Config": {
+      "main": [
+        [
+          {
+            "node": "List a folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Set Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a935901b-6ddc-4423-84d8-3bc3a612c506",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"
+  },
+  "id": "BDjBmhRm54nHl8SD",
+  "tags": []
+}

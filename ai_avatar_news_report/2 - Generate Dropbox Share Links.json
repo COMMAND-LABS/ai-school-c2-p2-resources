@@ -1,0 +1,153 @@
+{
+  "name": "2 - Generate Dropbox Share Links",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        -400
+      ],
+      "id": "c45c0e62-d9ac-4f4e-abc4-8272826d2d9a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "folder",
+        "operation": "list",
+        "path": "={{ $json.mediaAssetsFolderPath }}",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        -400
+      ],
+      "id": "3d58dfa0-2583-46df-9270-9f77f3d87db1",
+      "name": "List a folder",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "x9JcistZPcwmSHoZ",
+          "name": "Dropbox account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"path\": \"{{ $json.pathLower }}\",\n  \"settings\": {\n    \"audience\": \"public\",\n    \"access\": \"viewer\",\n    \"allow_download\": true\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -192,
+        -400
+      ],
+      "id": "8dacd059-3d3c-4bc3-b290-d9690824b8c2",
+      "name": "Generate share links for relevant files",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "GIvzsGwwvRU6g0zL",
+          "name": "Dropbox account 3"
+        },
+        "oAuth2Api": {
+          "id": "Gf4ADaGQltTx7YIE",
+          "name": "Dropbox OAuth2 Client with \"Share Link\" Perms"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "4IC8JLbqt6xAPRAw",
+          "mode": "list",
+          "cachedResultName": "AI Avatar News Report DT",
+          "cachedResultUrl": "/projects/JfibotTF1i2uZ3V5/datatables/4IC8JLbqt6xAPRAw"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "1"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -400
+      ],
+      "id": "80ad26f6-96fb-4814-b5f3-0be90667596a",
+      "name": "Get row(s)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List a folder": {
+      "main": [
+        [
+          {
+            "node": "Generate share links for relevant files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "List a folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0b608528-85fc-4c9b-bd3f-d114f22ce1af",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"
+  },
+  "id": "C3VPowyiOJqdDH7d",
+  "tags": []
+}

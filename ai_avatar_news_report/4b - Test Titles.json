@@ -1,0 +1,56 @@
+{
+  "name": "4b - Test Titles",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.json2video.com/v2/movies",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"comment\": \"News Ticker Overlay Test\",\n  \"resolution\": \"hd\",\n  \"quality\": \"low\",\n  \"scenes\": [\n    {\n      \"comment\": \"Scene with News Marquee\",\n      \"elements\": [\n        {\n          \"type\": \"video\",\n          \"src\": \"https://www.dropbox.com/scl/fi/dc4hl1958di4poy96ge8u/hyperspeed.mov?rlkey=hd6zszs1hmtw0upg2c8j01vx3&st=w9ddb7dw&dl=1\",\n          \"zoom\": 1,\n          \"position\": \"center-center\"\n        },\n        {\n          \"type\": \"component\",\n          \"component\": \"basic/052\",\n          \"settings\": {\n            \"card\": {\n              \"vertical-align\": \"bottom\",\n              \"horizontal-align\": \"left\",\n              \"padding\": \"4vw\"\n            },\n            \"headline\": {\n              \"text\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit\",\n              \"font-size\": \"2.5vw\",\n              \"font-family\": \"Inter\",\n              \"font-weight\": \"400\",\n              \"background-color\": \"white\",\n              \"color\": \"black\",\n              \"padding\": \"1vw\"\n            },\n            \"section\": {\n              \"text\": \"SECTION\",\n              \"font-size\": \"2.5vw\",\n              \"font-family\": \"Inter\",\n              \"font-weight\": \"400\",\n              \"background-color\": \"red\",\n              \"color\": \"white\",\n              \"padding\": \"1vw\"\n            }\n          }\n        }\n      ]\n    }\n  ],\n  \"elements\": []\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16,
+        16
+      ],
+      "id": "c85ef674-0cfb-46b5-ae2f-d43a1bc6eb63",
+      "name": "Generate \"News-style\" titles with JSON2Video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "VPwMDsXmy5avyoE9",
+          "name": "JSON2Video API Header AAIVA"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4a0b2254-a3c6-4992-abaf-b8ff7dda1b4d",
+  "meta": {
+    "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"
+  },
+  "id": "GeNiHDKnCidkmR6h",
+  "tags": []
+}

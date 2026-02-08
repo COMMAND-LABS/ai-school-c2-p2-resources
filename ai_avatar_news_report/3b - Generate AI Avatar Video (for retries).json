@@ -1,0 +1,155 @@
+{
+  "name": "3b - Generate AI Avatar Video (for retries)",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        -64
+      ],
+      "id": "3fed3d3b-17fb-471a-95ba-c040dabda2d2",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "843709d1-ea9c-4b93-8c1d-af1a06fa7348",
+              "name": "directDownloadLink",
+              "value": "={{ $json.audio_url.replaceAll(\"dl=0\",\"dl=1\") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -416,
+        -64
+      ],
+      "id": "38f28d0c-c628-4169-9585-2227af4705cc",
+      "name": "Make Direct Download Link"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"caption\": \"false\",\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"scale\": 1,\n        \"avatar_style\": \"normal\",\n        \"talking_style\": \"stable\",\n        \"avatar_id\": \"e5b9411a1b8f4215ae374b2259c664d2\"\n      },\n      \"voice\": {\n        \"type\": \"audio\",\n        \"speed\": \"1\",\n        \"pitch\": \"0\",\n        \"duration\": \"1\",\n        \"audio_url\": \"{{ $json.directDownloadLink }}\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": \"1920\",\n    \"height\": \"1080\"\n  },\n  \"title\": \"{{ $json.directDownloadLink.extractUrlPath().split(\"/\")[4].split(\".\")[0] }}_{{ $('Edit Fields').item.json.identifier }}.mp4\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -192,
+        -64
+      ],
+      "id": "a7cb6b88-104f-4652-9fa5-d1ccabf45db0",
+      "name": "Generate AI Avatar Video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "NmemITnrcYgZTwiH",
+          "name": "HeyGen API key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f47b10fd-e17f-4502-8ebe-634bfb617b4b",
+              "name": "audio_url",
+              "value": "https://www.dropbox.com/scl/fi/cps0fj0yuuw6zp8oeilcl/2.mp3?rlkey=86scyphyf9wbfj53psy0973l7&st=wm0r4oos&dl=0",
+              "type": "string"
+            },
+            {
+              "id": "6f4e78c8-0db4-4b31-ae8c-63bf7faf18c3",
+              "name": "identifier",
+              "value": "0052",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -640,
+        -64
+      ],
+      "id": "0f0651eb-0d53-44f1-9b79-82fa08272b0a",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Make Direct Download Link": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Avatar Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Make Direct Download Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Avatar Video": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5141c69c-ca1b-46a5-81b3-c1b5fffce6db",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"
+  },
+  "id": "z4JbjKV7h3e4nHdd",
+  "tags": []
+}
