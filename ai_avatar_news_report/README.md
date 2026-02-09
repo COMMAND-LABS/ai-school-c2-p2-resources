@@ -17,21 +17,20 @@ Herein lies a collection of end-to-end workflows that enable you to generate new
 
 - 1. Research + Text-2-Speech
   - Performs research on a configurable topic via the Perplexity API
-  - Research is then transformed into a structure news report via the OpenAI API
+  - Research is then transformed into a structured news report via the OpenAI API
   - Each segment of the news report is converted into speech (text-2-speech) via the ElevenLabs API
   - Generated audio is stored in Dropbox for downstream use
-- 2a. Generate AI Avatar Clips
+- 2a. Generate AI Avatar Clip (1 scene)
   - Deliver your news report via a HeyGen avatar
-- 2b. Generate AI Avatar Video (for retries)
-  - Sometimes the HeyGen API will error out when generating your clips
-  - This workflow enable you to retry the segments that fail
+- 2b. Generate AI Avatar Video (all scenes)
+  - Sometimes the HeyGen API will error out when generating your clips hence 2a & 2b
 - 3a. Compile Final News Report
-  - Compile all the generated media assets (video, script, audio) into the final news report via the JSON2Video API
+  - Compile all the generated media assets (video, script, audio) into the final news report video via the JSON2Video API
 - 3b. Test Titles
   - Little utility workflow for refining/experimenting with the "news-style" title overlays
 - UTILITY: Generate Dropbox Share Links
   - Dropbox requires you to explicitly generate links for downloading files stored in your Dropbox account
-  - This is will require a custom OAuth2 Client to get working
+  - This will require a custom OAuth2 Client to get working
 
 ## Additional Documentation
 
@@ -45,9 +44,9 @@ Herein lies a collection of end-to-end workflows that enable you to generate new
 ## How to use this solution (high-level)
 
 1. Research a topic (via Perplexity)
-2. Write a news report script
-3. TTS
+2. Write a news report script (via your favorite LLM API)
+3. TTS (via ElevenLabs)
 4. UTILITY: Generate Dropbox "Share Links" (for script.json and audio files)
-5. Generate AI Avatar videos via the HeyGen API (using TTS audio)
-6. UTILITY: Generate Dropbox "Share Links" (for video)
+5. Generate AI Avatar videos via the HeyGen API (using the TTS audio from Step 3)
+6. UTILITY: Generate Dropbox "Share Links" (for videos)
 7. Compile the assets into your final video (via JSON2Video)
