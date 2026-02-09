@@ -20,18 +20,18 @@ Herein lies a collection of end-to-end workflows that enable you to generate new
   - Research is then transformed into a structure news report via the OpenAI API
   - Each segment of the news report is converted into speech (text-2-speech) via the ElevenLabs API
   - Generated audio is stored in Dropbox for downstream use
-- 2. Generate Dropbox Share Links
-  - Dropbox requires you to explicitly generate links for downloading files stored in your Dropbox account
-  - This is will require a custom OAuth2 Client to get working
-- 3a. Generate AI Avatar Clips
+- 2a. Generate AI Avatar Clips
   - Deliver your news report via a HeyGen avatar
-- 3b. Generate AI Avatar Video (for retries)
+- 2b. Generate AI Avatar Video (for retries)
   - Sometimes the HeyGen API will error out when generating your clips
   - This workflow enable you to retry the segments that fail
-- 4a. Compile Final News Report
+- 3a. Compile Final News Report
   - Compile all the generated media assets (video, script, audio) into the final news report via the JSON2Video API
-- 4b. Test Titles
+- 3b. Test Titles
   - Little utility workflow for refining/experimenting with the "news-style" title overlays
+- UTILITY: Generate Dropbox Share Links
+  - Dropbox requires you to explicitly generate links for downloading files stored in your Dropbox account
+  - This is will require a custom OAuth2 Client to get working
 
 ## Additional Documentation
 
