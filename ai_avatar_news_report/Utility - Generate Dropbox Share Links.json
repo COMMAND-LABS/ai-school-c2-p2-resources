@@ -1,5 +1,5 @@
 {
-  "name": "2 - Generate Dropbox Share Links",
+  "name": "UTILITY - Generate Dropbox Share Links",
   "nodes": [
     {
       "parameters": {},
@@ -143,7 +143,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "0b608528-85fc-4c9b-bd3f-d114f22ce1af",
+  "versionId": "7e01cefb-63c0-4ec4-8673-416c9fe01234",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"

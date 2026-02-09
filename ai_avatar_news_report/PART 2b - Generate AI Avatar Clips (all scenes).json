@@ -1,5 +1,5 @@
 {
-  "name": "3a - Generate AI Avatar Clips",
+  "name": "PART 2b - Generate AI Avatar Clips (all scenes)",
   "nodes": [
     {
       "parameters": {},
@@ -7,7 +7,7 @@
       "typeVersion": 1,
       "position": [
         -768,
-        -32
+        48
       ],
       "id": "dfb5a39e-b83d-46a2-9bce-8bcd6aade2c5",
       "name": "When clicking ‘Execute workflow’"
@@ -17,14 +17,14 @@
         "authentication": "oAuth2",
         "resource": "folder",
         "operation": "list",
-        "path": "={{ $json.dropbox_folder_with_media_assets }}",
+        "path": "={{ $('Get row(s)').item.json.mediaAssetsFolderPath }}",
         "filters": {}
       },
       "type": "n8n-nodes-base.dropbox",
       "typeVersion": 1,
       "position": [
         -96,
-        -32
+        48
       ],
       "id": "59fee05e-906a-4d27-9fb2-e3a38a117608",
       "name": "List a folder",
@@ -143,7 +143,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"caption\": \"false\",\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"scale\": 1,\n        \"avatar_style\": \"normal\",\n        \"talking_style\": \"stable\",\n        \"avatar_id\": \"e5b9411a1b8f4215ae374b2259c664d2\"\n      },\n      \"voice\": {\n        \"type\": \"audio\",\n        \"speed\": \"1\",\n        \"pitch\": \"0\",\n        \"duration\": \"1\",\n        \"audio_url\": \"{{ $json.directDownloadLink }}\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": \"1920\",\n    \"height\": \"1080\"\n  },\n  \"title\": \"{{ $('List a folder').item.json.name.split(\".\")[0] }}_{{ $('Set Config').item.json.identifier }}\"\n}",
+        "jsonBody": "={\n  \"caption\": \"false\",\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"scale\": 1,\n        \"avatar_style\": \"normal\",\n        \"talking_style\": \"stable\",\n        \"avatar_id\": \"{{ $('Set Config').item.json.heygen_avatar_id }}\"\n      },\n      \"voice\": {\n        \"type\": \"audio\",\n        \"speed\": \"1\",\n        \"pitch\": \"0\",\n        \"duration\": \"1\",\n        \"audio_url\": \"{{ $json.directDownloadLink }}\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": \"1920\",\n    \"height\": \"1080\"\n  },\n  \"title\": \"{{ $('List a folder').item.json.name.split(\".\")[0] }}_{{ $('Set Config').item.json.generation_id }}\"\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -162,7 +162,9 @@
       }
     },
     {
-      "parameters": {},
+      "parameters": {
+        "amount": 1
+      },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
@@ -181,7 +183,7 @@
       "typeVersion": 3,
       "position": [
         128,
-        -32
+        48
       ],
       "id": "39c88c03-8d37-4675-97da-e177ff8a3d6d",
       "name": "Loop Over Items"
@@ -191,15 +193,15 @@
         "assignments": {
           "assignments": [
             {
-              "id": "f47b10fd-e17f-4502-8ebe-634bfb617b4b",
-              "name": "dropbox_folder_with_media_assets",
-              "value": "={{ $json.mediaAssetsFolderPath }}",
+              "id": "6f4e78c8-0db4-4b31-ae8c-63bf7faf18c3",
+              "name": "generation_id",
+              "value": "=441",
               "type": "string"
             },
             {
-              "id": "6f4e78c8-0db4-4b31-ae8c-63bf7faf18c3",
-              "name": "identifier",
-              "value": "={{ $now.format('mmss') }}",
+              "id": "f269f9b8-e222-4fa7-9c8a-1e1e34961b05",
+              "name": "heygen_avatar_id",
+              "value": "e5b9411a1b8f4215ae374b2259c664d2",
               "type": "string"
             }
           ]
@@ -210,7 +212,7 @@
       "typeVersion": 3.4,
       "position": [
         -320,
-        -32
+        48
       ],
       "id": "1258cb0c-14df-4a43-874c-3f5fc8636930",
       "name": "Set Config"
@@ -237,7 +239,7 @@
       "typeVersion": 1,
       "position": [
         -544,
-        -32
+        48
       ],
       "id": "c0039983-c93e-4b27-817d-d0ed47ca38a0",
       "name": "Get row(s)"
@@ -272,6 +274,13 @@
         [
           {
             "node": "List Dropbox \"Share Links\" for file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -361,7 +370,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a935901b-6ddc-4423-84d8-3bc3a612c506",
+  "versionId": "7dd95d4f-bb1f-4d71-aada-6c291d8b9d95",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"

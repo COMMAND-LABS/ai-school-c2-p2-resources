@@ -1,5 +1,5 @@
 {
-  "name": "4a - Compile Final News Report",
+  "name": "PART 3a - Compile Final News Report",
   "nodes": [
     {
       "parameters": {},
@@ -17,7 +17,7 @@
         "authentication": "oAuth2",
         "resource": "folder",
         "operation": "list",
-        "path": "={{ $json.dropbox_folder_with_media_assets }}",
+        "path": "={{ $('Get row(s)').item.json.mediaAssetsFolderPath }}",
         "filters": {}
       },
       "type": "n8n-nodes-base.dropbox",
@@ -38,20 +38,7 @@
     {
       "parameters": {
         "assignments": {
-          "assignments": [
-            {
-              "id": "f47b10fd-e17f-4502-8ebe-634bfb617b4b",
-              "name": "dropbox_folder_with_media_assets",
-              "value": "={{ $json.mediaAssetsFolderPath }}",
-              "type": "string"
-            },
-            {
-              "id": "6f4e78c8-0db4-4b31-ae8c-63bf7faf18c3",
-              "name": "identifier",
-              "value": "={{ $now.format('mmss') }}",
-              "type": "string"
-            }
-          ]
+          "assignments": []
         },
         "options": {}
       },
@@ -142,7 +129,7 @@
             {
               "id": "2c0541a6-b88b-41c1-9ca8-80ea344d9325",
               "name": "movie",
-              "value": "={\n    \"comment\": \"News Program\",\n    \"resolution\": \"full-hd\",\n    \"quality\": \"high\",\n    \"scenes\": {{ JSON.stringify($json.data) }},\n    \"elements\": []\n}",
+              "value": "={\n    \"comment\": \"News Program\",\n    \"resolution\": \"full-hd\",\n    \"quality\": \"high\",\n    \"scenes\": {{ JSON.stringify($json.scenes) }},\n    \"elements\": []\n}",
               "type": "object"
             }
           ]
@@ -152,7 +139,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -752,
+        -528,
         -1648
       ],
       "id": "145c5651-b641-49c0-8b38-85e21d9c1f04",
@@ -199,7 +186,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -528,
+        -304,
         -1648
       ],
       "id": "40034e63-4889-4d39-84aa-06818b81bd1e",
@@ -291,7 +278,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nconst scenes = [1,2,3]\nconst files = $input.all()\n\nlet filesForScenes = []\n\nfor (let i of scenes) {\n  console.log('i', i);\n\n  let filesForCurrentScene = {\n    audio: \"\",\n    script: \"\",\n    video: \"\"\n  };\n  \n  for (let j = 0; j < files.length; j++) {\n    if (files[j].json.name.startsWith(`${i}`)) {\n      // filesForCurrentScene.push(files[j])\n\n      if (files[j].json.name.endsWith(\".mp3\")) {\n        filesForCurrentScene[\"audio\"] = files[j].json.pathLower\n      } else if (files[j].json.name.endsWith(\".mp4\")) {\n        filesForCurrentScene[\"video\"] = files[j].json.pathLower\n      } else if (files[j].json.name.endsWith(\".json\")) {\n        filesForCurrentScene[\"script\"] = files[j].json.pathLower\n      } else {\n        console.log(\"Unknown file type\")\n      }\n    }\n  }\n\n  filesForScenes.push(filesForCurrentScene)\n  \n}\n\nreturn filesForScenes;"
+        "jsCode": "const scenes = [1,2,3]\nconst files = $input.all()\n\nlet filesForScenes = []\n\nfor (let i of scenes) {\n  console.log('i', i);\n\n  let filesForCurrentScene = {\n    audio: \"\",\n    script: \"\",\n    video: \"\"\n  };\n  \n  for (let j = 0; j < files.length; j++) {\n    if (files[j].json.name.startsWith(`${i}`)) {\n      // filesForCurrentScene.push(files[j])\n\n      if (files[j].json.name.endsWith(\".mp3\")) {\n        filesForCurrentScene[\"audio\"] = files[j].json.pathLower\n      } else if (files[j].json.name.endsWith(\".mp4\")) {\n        filesForCurrentScene[\"video\"] = files[j].json.pathLower\n      } else if (files[j].json.name.endsWith(\".json\")) {\n        filesForCurrentScene[\"script\"] = files[j].json.pathLower\n      } else {\n        console.log(\"Unknown file type\")\n      }\n    }\n  }\n\n  filesForScenes.push(filesForCurrentScene)\n  \n}\n\nreturn filesForScenes;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -301,19 +288,6 @@
       ],
       "id": "cd7345d3-aa1f-40c1-b7df-9068d1d01fc7",
       "name": "Group files by scene"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nlet scene = [\n  {\n    \"comment\": `News Segment ${$input.first().json.index}`,\n    \"background-color\": \"#00FF00\",\n    \"elements\": [\n      {\n        \"type\": \"video\",\n        \"src\": `${$input.first().json.directDownloadLink}`,\n        \"duration\": -1\n      },\n      {\n        \"type\": \"component\",\n        \"component\": \"basic/052\",\n        \"settings\": {\n          \"card\": {\n            \"vertical-align\": \"bottom\",\n            \"horizontal-align\": \"left\",\n            \"padding\": \"4vw\"\n          },\n          \"headline\": {\n            \"text\": `${$('Download script.json').first().json.headline}`,\n            \"font-size\": \"2.5vw\",\n            \"font-family\": \"Inter\",\n            \"font-weight\": \"400\",\n            \"background-color\": \"white\",\n            \"color\": \"black\",\n            \"padding\": \"1vw\"\n          },\n          \"section\": {\n            \"text\": `SEGMENT ${$('Download script.json').first().json.index}`,\n            \"font-size\": \"2.5vw\",\n            \"font-family\": \"Inter\",\n            \"font-weight\": \"400\",\n            \"background-color\": \"red\",\n            \"color\": \"white\",\n            \"padding\": \"1vw\"\n          }\n        }\n      }\n    ]\n  },\n  {\n    \"comment\": \"Haiti Flag Transition\",\n    \"elements\": [\n      {\n        \"type\": \"image\",\n        \"src\": \"https://www.dropbox.com/scl/fi/8u40zncmif0reat8d3yt3/THUMBNAIL.png?rlkey=xinc70b4ypbcajpcijnif9mzp&st=vn91q423&dl=1\",\n        \"duration\": -1\n      },\n      {\n        \"type\": \"audio\",\n        \"src\": \"https://www.dropbox.com/scl/fi/66c0kodhrm1ylg9vwvc2w/glitch_sound_effect_2.mp3?rlkey=b68z321qqjn2y9yyo2bcjmex4&st=rgp12vzb&dl=1\",\n        \"duration\": -1\n      }\n    ]\n  }\n]\n\nreturn scene"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        368,
-        -1296
-      ],
-      "id": "541fe3c9-73cd-436d-abb4-63cc304f09d8",
-      "name": "Code in JavaScript"
     },
     {
       "parameters": {
@@ -388,6 +362,32 @@
       ],
       "id": "bcd12528-a325-4d98-af19-eb649c3075c9",
       "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nlet scene = [\n  {\n    \"comment\": \"Haiti Flag Transition\",\n    \"elements\": [\n      {\n        \"type\": \"image\",\n        \"src\": \"https://www.dropbox.com/scl/fi/yi41gqhnsflemgqp417a3/THUMBNAIL.png?rlkey=zhpezq0ksug2n7z9exofalnif&st=4e9vtzi3&dl=1\",\n        \"duration\": -1\n      },\n      {\n        \"type\": \"text\",\n        \"text\": \"Rapport d'actualités A.I.tiennes\\n8 février 2026\",\n        \"settings\": {\n          \"font-family\": \"Roboto\",\n          \"font-size\": \"48px\",\n          \"font-weight\": \"700\",\n          \"font-color\": \"#FFFFFF\",\n          \"background-color\": \"#000000\",\n          \"text-align\": \"center\"\n        }\n      },\n      {\n        \"type\": \"audio\",\n        \"src\": \"https://www.dropbox.com/scl/fi/gsize2ulnulj8trihpjg8/glitch_sound_effect_2.mp3?rlkey=dem3a9rpnbl0ix8bq57t3806d&st=ypkcogvi&dl=1\",\n        \"duration\": -1\n      }\n    ]\n  },\n  {\n    \"comment\": `News Segment ${$input.first().json.index}`,\n    \"background-color\": \"#00FF00\",\n    \"elements\": [\n      {\n        \"type\": \"video\",\n        \"src\": `${$input.first().json.directDownloadLink}`,\n        \"duration\": -1\n      },\n      {\n        \"type\": \"component\",\n        \"component\": \"basic/052\",\n        \"settings\": {\n          \"card\": {\n            \"vertical-align\": \"bottom\",\n            \"horizontal-align\": \"left\",\n            \"padding\": \"4vw\"\n          },\n          \"headline\": {\n            \"text\": `${$('Download script.json').first().json.headline}`,\n            \"font-size\": \"2.5vw\",\n            \"font-family\": \"Inter\",\n            \"font-weight\": \"400\",\n            \"background-color\": \"white\",\n            \"color\": \"black\",\n            \"padding\": \"1vw\"\n          },\n          \"section\": {\n            \"text\": `SEGMENT ${$('Download script.json').first().json.index}`,\n            \"font-size\": \"2.5vw\",\n            \"font-family\": \"Inter\",\n            \"font-weight\": \"400\",\n            \"background-color\": \"red\",\n            \"color\": \"white\",\n            \"padding\": \"1vw\"\n          }\n        }\n      }\n    ]\n  }\n]\n\nreturn scene"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        -1296
+      ],
+      "id": "541fe3c9-73cd-436d-abb4-63cc304f09d8",
+      "name": "Build JSON for Segment"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nreturn {\n  \"scenes\": [ ...$input.first().json.data,\n  {\n    \"comment\": \"Haiti Flag Outro\",\n    \"elements\": [\n      {\n        \"type\": \"image\",\n        \"src\": \"https://www.dropbox.com/scl/fi/yi41gqhnsflemgqp417a3/THUMBNAIL.png?rlkey=zhpezq0ksug2n7z9exofalnif&st=4e9vtzi3&dl=1\",\n        \"duration\": -1\n      },\n      {\n        \"type\": \"audio\",\n        \"src\": \"https://www.dropbox.com/scl/fi/gsize2ulnulj8trihpjg8/glitch_sound_effect_2.mp3?rlkey=dem3a9rpnbl0ix8bq57t3806d&st=ypkcogvi&dl=1\",\n        \"duration\": -1\n      }\n    ]\n  }\n]\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -752,
+        -1648
+      ],
+      "id": "e0168cb7-274d-4dd1-972b-06df0698a539",
+      "name": "Append Outro Scene"
     }
   ],
   "pinData": {},
@@ -469,7 +469,7 @@
       "main": [
         [
           {
-            "node": "Final movie.json",
+            "node": "Append Outro Scene",
             "type": "main",
             "index": 0
           }
@@ -513,7 +513,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "Build JSON for Segment",
             "type": "main",
             "index": 0
           }
@@ -521,17 +521,6 @@
       ]
     },
     "Group files by scene": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
       "main": [
         [
           {
@@ -570,13 +559,35 @@
           }
         ]
       ]
+    },
+    "Build JSON for Segment": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Outro Scene": {
+      "main": [
+        [
+          {
+            "node": "Final movie.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "f986d699-ba50-4446-980f-a3fa5466e5d0",
+  "versionId": "49dfdfde-1bbc-4457-a9d6-1af143466853",
   "meta": {
     "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"
   },

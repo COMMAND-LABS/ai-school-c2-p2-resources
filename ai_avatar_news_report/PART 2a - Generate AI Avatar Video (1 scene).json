@@ -1,5 +1,5 @@
 {
-  "name": "3b - Generate AI Avatar Video (for retries)",
+  "name": "PART 2a - Generate AI Avatar Video (1 scene)",
   "nodes": [
     {
       "parameters": {},
@@ -52,7 +52,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"caption\": \"false\",\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"scale\": 1,\n        \"avatar_style\": \"normal\",\n        \"talking_style\": \"stable\",\n        \"avatar_id\": \"e5b9411a1b8f4215ae374b2259c664d2\"\n      },\n      \"voice\": {\n        \"type\": \"audio\",\n        \"speed\": \"1\",\n        \"pitch\": \"0\",\n        \"duration\": \"1\",\n        \"audio_url\": \"{{ $json.directDownloadLink }}\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": \"1920\",\n    \"height\": \"1080\"\n  },\n  \"title\": \"{{ $json.directDownloadLink.extractUrlPath().split(\"/\")[4].split(\".\")[0] }}_{{ $('Edit Fields').item.json.identifier }}.mp4\"\n}",
+        "jsonBody": "={\n  \"caption\": \"false\",\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"scale\": 1,\n        \"avatar_style\": \"normal\",\n        \"talking_style\": \"stable\",\n        \"avatar_id\": \"e5b9411a1b8f4215ae374b2259c664d2\"\n      },\n      \"voice\": {\n        \"type\": \"audio\",\n        \"speed\": \"1\",\n        \"pitch\": \"0\",\n        \"duration\": \"1\",\n        \"audio_url\": \"{{ $json.directDownloadLink }}\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": \"1920\",\n    \"height\": \"1080\"\n  },\n  \"title\": \"{{ $json.directDownloadLink.extractUrlPath().split(\"/\")[4].split(\".\")[0] }}_{{ $('Edit Fields').item.json.identifier }}\"\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -77,13 +77,13 @@
             {
               "id": "f47b10fd-e17f-4502-8ebe-634bfb617b4b",
               "name": "audio_url",
-              "value": "https://www.dropbox.com/scl/fi/cps0fj0yuuw6zp8oeilcl/2.mp3?rlkey=86scyphyf9wbfj53psy0973l7&st=wm0r4oos&dl=0",
+              "value": "https://www.dropbox.com/scl/fi/tcfp7me0s2xsp2yd2le21/3.mp3?rlkey=go2lfux0qfg5pdfxws3himuti&st=ed91x3bj&dl=0",
               "type": "string"
             },
             {
               "id": "6f4e78c8-0db4-4b31-ae8c-63bf7faf18c3",
               "name": "identifier",
-              "value": "0052",
+              "value": "441",
               "type": "string"
             }
           ]
@@ -145,7 +145,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "5141c69c-ca1b-46a5-81b3-c1b5fffce6db",
+  "versionId": "02e49718-a7d0-48fb-8341-379e2936760a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"
