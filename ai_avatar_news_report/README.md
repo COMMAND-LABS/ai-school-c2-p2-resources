@@ -41,3 +41,13 @@ Herein lies a collection of end-to-end workflows that enable you to generate new
 - https://developers.dropbox.com/oauth-guide
 - https://docs.heygen.com/reference/create-an-avatar-video-v2
 - https://app.heygen.com/avatars
+
+## How to use this solution (high-level)
+
+1. Research a topic (via Perplexity)
+2. Write a news report script
+3. TTS
+4. UTILITY: Generate Dropbox "Share Links" (for script.json and audio files)
+5. Generate AI Avatar videos via the HeyGen API (using TTS audio)
+6. UTILITY: Generate Dropbox "Share Links" (for video)
+7. Compile the assets into your final video (via JSON2Video)
