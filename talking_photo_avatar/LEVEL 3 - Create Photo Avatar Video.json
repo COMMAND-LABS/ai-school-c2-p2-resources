@@ -1,0 +1,75 @@
+{
+  "name": "LEVEL 3 - Create Photo Avatar Video",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b90d872c-a064-4e4b-ada2-abc0e09f994a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"caption\": \"false\",\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"talking_photo\",\n        \"scale\": 1,\n        \"avatar_style\": \"normal\",\n        \"talking_style\": \"stable\",\n        \"talking_photo_id\": \"6f8eddd848eb481687a541389acaee45\"\n      },\n      \"voice\": {\n        \"type\": \"text\",\n        \"speed\": \"1\",\n        \"pitch\": \"0\",\n        \"duration\": \"1\",\n        \"voice_id\": \"62869fd4b7c840c28dfcddcb24bccf5f\",\n        \"input_text\": \"We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness.\"\n      },\n      \"background\": {\n        \"type\": \"color\",\n        \"value\": \"#FFFFFF\",\n        \"play_style\": \"freeze\",\n        \"fit\": \"cover\"\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": \"1920\",\n    \"height\": \"1080\"\n  },\n  \"title\": \"TJ_test_1\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9a45cd00-b656-4dfb-acc2-cb4ebeb4f28e",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "NmemITnrcYgZTwiH",
+          "name": "HeyGen API key"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "600fed5d-d7db-45c5-b7c6-31db7f7e0ef0",
+  "meta": {
+    "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"
+  },
+  "id": "nXyMhIMgxpjzOjjl",
+  "tags": []
+}
