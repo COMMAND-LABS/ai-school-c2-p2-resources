@@ -11,6 +11,12 @@ Script outline for the `How to make AI Avatar News Reports` YouTube walkthrough
 
 ## PART 1: Tips regarding the "Research + Text-2-Speech" workflow
 
+- Prereqs:
+  - Dropbox account (FREE)
+  - Perplexity account (can purchase as low as $3 worth of credits which if you are careful you can stretch)
+  - OpenAI Platform account
+  - ElevenLabs account
+
 - Check out the config nodes
 
 - You'll need a Perplexity API key (ie: Perplexity will perform research and provide references to where it's output is coming from)
@@ -39,6 +45,8 @@ Script outline for the `How to make AI Avatar News Reports` YouTube walkthrough
 
 - Upload the generated assets (audio and script) to Dropbox for use in later workflows (which we'll take a look at shortly)
   - https://www.dropbox.com
+
+## UTILITY `Generate Dropbox Share Links` workflow
 
 - IMPORTANT: Here use the utility `Generate Dropbox Share Links` workflow
 

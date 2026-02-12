@@ -1,5 +1,5 @@
 {
-  "name": "PART 2b - Generate AI Avatar Clips (all scenes)",
+  "name": "Generate AI Avatar Clips (all scenes)",
   "nodes": [
     {
       "parameters": {},
@@ -195,7 +195,7 @@
             {
               "id": "6f4e78c8-0db4-4b31-ae8c-63bf7faf18c3",
               "name": "generation_id",
-              "value": "=441",
+              "value": "=2026_02_09__11_56_14_AM",
               "type": "string"
             },
             {
@@ -370,7 +370,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "7dd95d4f-bb1f-4d71-aada-6c291d8b9d95",
+  "versionId": "c60d6aed-8221-44b4-9927-a46370e9ff14",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"

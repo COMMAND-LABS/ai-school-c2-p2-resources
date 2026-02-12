@@ -1,5 +1,5 @@
 {
-  "name": "PART 1 - Research + Text-2-Speech",
+  "name": "Research + Text-2-Speech",
   "nodes": [
     {
       "parameters": {},
@@ -53,7 +53,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": false,
+                    "leftValue": true,
                     "rightValue": "",
                     "operator": {
                       "type": "boolean",
@@ -79,7 +79,7 @@
                 "conditions": [
                   {
                     "id": "105c05b2-9f9f-4680-94d4-8f6197751e7f",
-                    "leftValue": true,
+                    "leftValue": false,
                     "rightValue": "",
                     "operator": {
                       "type": "boolean",
@@ -376,13 +376,13 @@
             {
               "id": "4bd4a998-bfe7-498d-94bc-a68c06647d6c",
               "name": "topic",
-              "value": "Positive developments regarding Haiti",
+              "value": "Positive developments regarding Ayiti (aka Haiti)",
               "type": "string"
             },
             {
               "id": "f980c17a-0214-4a15-b63b-c950d3022610",
               "name": "mediaAssetsBaseFolder",
-              "value": "=/projects/haiti_news_report/{{ $('Set Config (PART A)').first().json.timestamp }}",
+              "value": "=/projects/ayiti_news_report/{{ $('Set Config (PART A)').first().json.timestamp }}",
               "type": "string"
             },
             {
@@ -415,7 +415,7 @@
         "responses": {
           "values": [
             {
-              "content": "=# TASK\n\nYou are the host of an internationally renowned short-form news show. Create an outline for your latest news report based on the research provided below.\n\nThe outline will be organized into scenes or segments. Each scene represents one news segment of the overall news program.\n\n## REQUIREMENTS\n\n- The general topic of the news program is: {{ $('Set Config (PART B)').item.json.topic }}\n- The script of each segment should be between 5 to 10 seconds in length when dictated\n- Only create 3 segments\n- Any dates in the script should be spelled out so the text-2-speech tool accurately pronounces them\n- avoid special characters in the script so the text-to-speech system pronounces all words in the script correctly\n- the script should be written in English as it will be delivered in that language downstream\n\n## RESEARCH\n\n{{ $('Message a model').item.json.choices[0].message.content }}\n\n## CITATIONS\n\n{{ $('Message a model').item.json.citations }}\n\n## JSON OUTPUT SCHEMA\n\n{\n  \"index\": number;\n  \"script\": string;\n  \"headline\": string;\n  \"citations\": string[];\n}[]"
+              "content": "=# TASK\n\nYou are the host of an internationally renowned short-form news show. Create an outline for your latest news report based on the research provided below.\n\nThe outline will be organized into scenes or segments. Each scene represents one news segment of the overall news program.\n\n## REQUIREMENTS\n\n- The general topic of the news program is: {{ $('Set Config (PART B)').item.json.topic }}\n- The script of each segment should be between 5 to 10 seconds in length when dictated\n- Only create 3 segments\n- Any dates in the script should be spelled out so the text-2-speech tool used downstream accurately pronounces them\n- avoid special characters in the script that would cause text-to-speech systems to dictate the script incorrectly\n- the script should be written in English as it will be delivered in that language downstream\n\n## RESEARCH\n\n{{ $('Message a model').item.json.choices[0].message.content }}\n\n## CITATIONS\n\n{{ $('Message a model').item.json.citations }}\n\n## JSON OUTPUT SCHEMA\n\n{\n  \"index\": number;\n  \"script\": string;\n  \"headline\": string;\n  \"citations\": string[];\n}[]"
             }
           ]
         },
@@ -558,105 +558,7 @@
       }
     }
   ],
-  "pinData": {
-    "Message a model": [
-      {
-        "json": {
-          "id": "50454857-7de8-4505-9576-a2437aa6f462",
-          "model": "sonar",
-          "created": 1770592950,
-          "usage": {
-            "prompt_tokens": 41,
-            "completion_tokens": 449,
-            "total_tokens": 490,
-            "search_context_size": "low",
-            "cost": {
-              "input_tokens_cost": 0.00004,
-              "output_tokens_cost": 0.00045,
-              "request_cost": 0.005,
-              "total_cost": 0.00549
-            }
-          },
-          "citations": [
-            "https://ajws.org/stories/what-next-for-haiti-after-february-2026/",
-            "https://www.securitycouncilreport.org/monthly-forecast/2026-01/haiti-33.php",
-            "https://www.chathamhouse.org/2026/01/roadmap-security-and-governance-reform-haiti",
-            "https://www.hrw.org/world-report/2026/country-chapters/haiti",
-            "https://news.un.org/en/story/2026/01/1166801",
-            "https://www.atlanticcouncil.org/dispatches/haitis-week-ahead-is-the-next-test-for-trumps-western-hemisphere-focus/"
-          ],
-          "search_results": [
-            {
-              "title": "What Next for Haiti After February 2026?",
-              "url": "https://ajws.org/stories/what-next-for-haiti-after-february-2026/",
-              "date": "2025-12-15",
-              "last_updated": "2026-01-04",
-              "snippet": "We want the government to undergo vetting so that state agencies can function; stabilize the economy so that people can make a living; and rebuild the justice ...",
-              "source": "web"
-            },
-            {
-              "title": "Haiti, January 2026 Monthly Forecast - Security Council Report",
-              "url": "https://www.securitycouncilreport.org/monthly-forecast/2026-01/haiti-33.php",
-              "date": "2025-12-30",
-              "last_updated": "2026-02-08",
-              "snippet": "In January, the Security Council is expected to vote on a draft resolution renewing the mandate of the UN Integrated Office in Haiti (BINUH) ...",
-              "source": "web"
-            },
-            {
-              "title": "A roadmap for security and governance reform in Haiti",
-              "url": "https://www.chathamhouse.org/2026/01/roadmap-security-and-governance-reform-haiti",
-              "date": "2026-01-22",
-              "last_updated": "2026-01-22",
-              "snippet": "A roadmap for security and governance reform in Haiti. How to address multilateral breakdown and state collapse. Research paper. Published 22 ...",
-              "source": "web"
-            },
-            {
-              "title": "World Report 2026: Haiti | Human Rights Watch",
-              "url": "https://www.hrw.org/world-report/2026/country-chapters/haiti",
-              "date": "2026-02-03",
-              "last_updated": "2026-02-08",
-              "snippet": "Haiti's multidimensional political, economic, humanitarian, and human rights crisis deteriorated further in 2025. Criminal groups, allied under the “Viv ...",
-              "source": "web"
-            },
-            {
-              "title": "Haiti explained: why the crisis is deepening — and what comes next",
-              "url": "https://news.un.org/en/story/2026/01/1166801",
-              "date": "2026-01-21",
-              "last_updated": "2026-02-08",
-              "snippet": "The Humanitarian Response Plan for 2026 is seeking $880 million to assist 4.2 million people. Preparations are under way for the recently- ...",
-              "source": "web"
-            },
-            {
-              "title": "Haiti's week ahead is the next test for Trump's Western Hemisphere ...",
-              "url": "https://www.atlanticcouncil.org/dispatches/haitis-week-ahead-is-the-next-test-for-trumps-western-hemisphere-focus/",
-              "date": "2026-01-30",
-              "last_updated": "2026-02-08",
-              "snippet": "The first round of elections is now set for August 2026, though experts warn the timeline will be difficult to meet absent meaningful security ...",
-              "source": "web"
-            }
-          ],
-          "object": "chat.completion",
-          "choices": [
-            {
-              "index": 0,
-              "message": {
-                "role": "assistant",
-                "content": "**Recent positive developments in Haiti as of early 2026 include the approval of an electoral decree and calendar by the Transitional Presidential Council (TPC), setting the first round of elections for August 2026, a second round for December 2027, and final results by January 2027, provided security improves.** [4][5][6] This marks progress toward ending the political transition and installing an elected president and legislature by early 2027, with UN support via BINUH for electoral assistance and human rights monitoring.[5]\n\n**In September 2025, the UN Security Council authorized the transformation of the Multinational Security Support (MSS) mission into a Gang Suppression Force (GSF) with up to 5,550 personnel.** [2][4] The GSF can conduct independent counter-gang operations to neutralize threats, protect infrastructure, build Haitian security forces' capacity, enable elections and humanitarian access, and combat trafficking, representing a shift from prior training-focused efforts.[2][4]\n\n**The UN is preparing the United Nations Support Office in Haiti (UNSOH) to provide logistical backing to the GSF, alongside a 2026 Humanitarian Response Plan seeking $880 million for 4.2 million people.** [5] BINUH's mandate renewal is under consideration for January 2026 to sustain support for governance, human rights, police development, and violence reduction.[2][5]\n\n**Civil society and experts propose Haitian-led reforms, including vetting government institutions, truth commissions for past crimes like the PetroCaribe scandal, independent courts for corruption and trafficking, and reparations funds to rebuild infrastructure and address inequalities.** [1][3] A three-year roadmap emphasizes national strategic visions, professionalizing police and army, and reducing gang influence through justice measures.[3] International partners are urged to fund these in collaboration with Haitian leaders.[1]\n\n**UN Secretary-General António Guterres highlighted the urgency of national consensus for elections and governance to complement security gains, noting that enforcement alone cannot resolve underlying issues.** [5] Council members agree on tackling gang violence and pursuing Haitian-led political solutions addressing security and socioeconomic challenges.[2]"
-              },
-              "delta": {
-                "role": "assistant",
-                "content": ""
-              },
-              "finish_reason": "stop"
-            }
-          ]
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "When clicking ‘Execute workflow’": {
       "main": [
@@ -903,7 +805,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "4b22b244-1675-444d-a30f-9d943955e1dd",
+  "versionId": "88633ff7-dc69-445a-b0eb-3f6fbbcf1e7d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"

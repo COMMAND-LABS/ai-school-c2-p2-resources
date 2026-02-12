@@ -1,5 +1,5 @@
 {
-  "name": "PART 2a - Generate AI Avatar Video (1 scene)",
+  "name": "Generate AI Avatar Video (1 scene)",
   "nodes": [
     {
       "parameters": {},
@@ -77,13 +77,13 @@
             {
               "id": "f47b10fd-e17f-4502-8ebe-634bfb617b4b",
               "name": "audio_url",
-              "value": "https://www.dropbox.com/scl/fi/tcfp7me0s2xsp2yd2le21/3.mp3?rlkey=go2lfux0qfg5pdfxws3himuti&st=ed91x3bj&dl=0",
+              "value": "https://www.dropbox.com/scl/fi/7jqifx79j5yiivnp2kzvm/3.mp3?rlkey=xr8pl2b6d1dfuekckqi3ssqwd&st=s58uderv&dl=0",
               "type": "string"
             },
             {
               "id": "6f4e78c8-0db4-4b31-ae8c-63bf7faf18c3",
               "name": "identifier",
-              "value": "441",
+              "value": "2026_02_09__11_56_14_AM_tk2",
               "type": "string"
             }
           ]
@@ -145,7 +145,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "02e49718-a7d0-48fb-8341-379e2936760a",
+  "versionId": "da6a2aef-b628-4a3a-b220-6b767ef9dcfd",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "59163ef64e1cf4dcd8e0818ffdc09c87dbd57c11199a791813b2ff3820cc01aa"
